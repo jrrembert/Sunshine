@@ -1,5 +1,13 @@
 <resources>
     <string name="app_name">Sunshine</string>
-    <string name="hello_world">Hello world!</string>
+
+    <!--
+        By convention, "action" denotes that this string will be used
+        from the action bar.
+    -->
     <string name="action_settings">Settings</string>
+
+    <!-- Menu label to fetch updated weather info -->
+    <string name="action_refresh" translatable="false">Refresh</string>
+
 </resources>
