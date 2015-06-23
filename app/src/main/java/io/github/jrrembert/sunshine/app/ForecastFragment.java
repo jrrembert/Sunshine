@@ -23,9 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 /**
- * A placeholder fragment containing a simple view.
+ * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
  */
 public class ForecastFragment extends Fragment {
 
@@ -37,7 +36,7 @@ public class ForecastFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Allow fragment to handle menu events
+        // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
     }
 
@@ -49,8 +48,8 @@ public class ForecastFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so
-        // long as you specificy a parent activity in AndroidManifest.xml.
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             FetchWeatherTask weatherTask = new FetchWeatherTask();
@@ -64,34 +63,31 @@ public class ForecastFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        String[] forecastArray = {
-                "Today - Sunny - 88 / 63",
-                "Tomorrow - Cloudy - 75 / 52",
-                "Thursday - Rain - 72 / 51",
-                "Friday - Sunny - 89 / 65",
-                "Saturday - Partly Cloudy - 82 / 69",
-                "Sunday - Sunny - 89 / 65",
-                "Monday - Sunny - 90 / 70"
+        // Create some dummy data for the ListView.  Here's a sample weekly forecast
+        String[] data = {
+                "Mon 6/23 - Sunny - 31/17",
+                "Tue 6/24 - Foggy - 21/8",
+                "Wed 6/25 - Cloudy - 22/17",
+                "Thurs 6/26 - Rainy - 18/11",
+                "Fri 6/27 - Foggy - 21/10",
+                "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
+                "Sun 6/29 - Sunny - 20/7"
         };
-        List<String> weekForecast = new ArrayList<String>(
-                Arrays.asList(forecastArray));
+        List<String> weekForecast = new ArrayList<String>(Arrays.asList(data));
 
-        // Create an ArrayAdapter to take our dummy data and use it to populate
-        // it's attached ListView
-        mForecastAdapter = new ArrayAdapter<String>(
-                // Current context (this fragment's parent activity
-                getActivity(),
-                // ID of list item layout
-                R.layout.list_item_forecast,
-                // ID of TextView to populate
-                R.id.list_item_forecast_textview,
-                // Forecast data
-                weekForecast
-        );
+        // Now that we have some dummy forecast data, create an ArrayAdapter.
+        // The ArrayAdapter will take data from a source (like our dummy forecast) and
+        // use it to populate the ListView it's attached to.
+        mForecastAdapter =
+                new ArrayAdapter<String>(
+                        getActivity(), // The current context (this activity)
+                        R.layout.list_item_forecast, // The name of the layout ID.
+                        R.id.list_item_forecast_textview, // The ID of the textview to populate.
+                        weekForecast);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        // Get reference to ListView and attach adapter to it.
+        // Get a reference to the ListView, and attach this adapter to it.
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
 
@@ -109,16 +105,16 @@ public class ForecastFragment extends Fragment {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
-            // Will contain the raw JSON response as a string
+            // Will contain the raw JSON response as a string.
             String forecastJsonStr = null;
 
             try {
                 // Construct the URL for the OpenWeatherMap query
-                // Parameters are available at OWM's forecast API page, at
+                // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL("http://api.openweathermap.org/data/2.5/forecast/daily?q=98126@mode=json&units=metric&cnt=7");
+                URL url = new URL("http://api.openweathermap.org/data/2.5/forecast/daily?q=98126&mode=json&units=metric&cnt=7");
 
-                //Create request to OpenWeatherMap, then open the connection.
+                // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
@@ -127,7 +123,7 @@ public class ForecastFragment extends Fragment {
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
-                    // Nothing to do
+                    // Nothing to do.
                     return null;
                 }
                 reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -135,29 +131,25 @@ public class ForecastFragment extends Fragment {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // but it does make debugging a *lot* easier if you print out the completed
+                    // But it does make debugging a *lot* easier if you print out the completed
                     // buffer for debugging.
                     buffer.append(line + "\n");
                 }
 
                 if (buffer.length() == 0) {
-                    // Stream was empty. No point in parsing.
+                    // Stream was empty.  No point in parsing.
                     return null;
                 }
                 forecastJsonStr = buffer.toString();
-
-                Log.v(LOG_TAG, "Forecast JSON String: " + forecastJsonStr);
-
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
-                // If the code didn't successfully get the weather data, there's no point in
-                // attempting to parse it.
+                // If the code didn't successfully get the weather data, there's no point in attemping
+                // to parse it.
                 return null;
             } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
                 }
-
                 if (reader != null) {
                     try {
                         reader.close();
