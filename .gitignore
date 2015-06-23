@@ -1,11 +1,21 @@
-.gradle
-/local.properties
+### OSX System Files ###
 .DS_Store
-/build
-/captures
+
 
 ### Intellij ###
+# Nuke it all (comment out if you just want to ignore user-specific stuff
+/.idea
+*.iml
+
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
 **/.idea/workspace.xml
 **/.idea/tasks.xml
+
+### Gradle ###
+.gradle
+/build
+
+### I have idea, but sure ###
+/captures
+/local.properties
