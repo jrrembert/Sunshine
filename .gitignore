@@ -2,7 +2,7 @@
 .DS_Store
 
 
-### Intellij ###
+### IntelliJ ###
 # Nuke it all (comment out if you just want to ignore user-specific stuff
 /.idea
 *.iml
@@ -16,6 +16,6 @@
 .gradle
 /build
 
-### I have idea, but sure ###
+### I have no idea, but sure ###
 /captures
 /local.properties
