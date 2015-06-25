@@ -1,7 +1,6 @@
 ### OSX System Files ###
 .DS_Store
 
-
 ### IntelliJ ###
 # Nuke it all (comment out if you just want to ignore user-specific stuff
 /.idea
