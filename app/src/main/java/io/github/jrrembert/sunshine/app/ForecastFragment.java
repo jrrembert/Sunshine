@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class ForecastFragment extends Fragment {
 
-    private ArrayAdapter<String> mForecastAdapter;
+    public static ArrayAdapter<String> mForecastAdapter;
 
     public ForecastFragment() {
     }
@@ -80,6 +80,7 @@ public class ForecastFragment extends Fragment {
                 "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
                 "Sun 6/29 - Sunny - 20/7"
         };
+
         List<String> weekForecast = new ArrayList<String>(Arrays.asList(data));
 
         // Now that we have some dummy forecast data, create an ArrayAdapter.
@@ -197,10 +198,10 @@ public class ForecastFragment extends Fragment {
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
             }
 
-            // Log each value packed into resultStrs
-            for (String s : resultStrs) {
-                Log.v(LOG_TAG, "Forecast entry: " + s);
-            }
+//            // Log each value packed into resultStrs
+//            for (String s : resultStrs) {
+//                Log.v(LOG_TAG, "Forecast entry: " + s);
+//            }
 
             return resultStrs;
         }
@@ -300,6 +301,17 @@ public class ForecastFragment extends Fragment {
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String[] result) {
+            // Add our data to our ArrayAdapter so that it gets published to the app.
+            if (result != null) {
+                mForecastAdapter.clear();
+                for (String dayForecaststr : result) {
+                    mForecastAdapter.add(dayForecaststr);
+                }
+            }
         }
     }
 }
