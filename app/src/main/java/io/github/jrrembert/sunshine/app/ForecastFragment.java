@@ -1,5 +1,6 @@
 package io.github.jrrembert.sunshine.app;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,11 +104,12 @@ public class ForecastFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String toastMessage = parent.getItemAtPosition(position).toString();
+                String forecastMessage = mForecastAdapter.getItem(position);
                 // Could also use:
                 // String toastMessage = mForecastAdapter.getItem(position);
-                Toast.makeText(view.getContext(), toastMessage, Toast.LENGTH_SHORT).show();
-            }
+                Intent detailIntent = new Intent(getActivity(), DetailActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, forecastMessage);
+                startActivity(detailIntent);}
         });
 
         return rootView;

@@ -9,7 +9,7 @@
 
     <!-- Menu label to fetch updated weather info -->
     <string name="action_refresh" translatable="false">Refresh</string>
-    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_detail">Details</string>
 
     <string name="hello_world">Hello world!</string>
 
