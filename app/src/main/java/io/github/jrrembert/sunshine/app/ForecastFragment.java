@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,12 +15,17 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -170,8 +176,8 @@ public class ForecastFragment extends Fragment {
                 forecastJsonStr = buffer.toString();
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
-                // If the code didn't successfully get the weather data, there's no point in attemping
-                // to parse it.
+                // If the code didn't successfully get the weather data,
+                // there's no point in attemping to parse it.
                 return null;
             } finally {
                 if (urlConnection != null) {
@@ -186,6 +192,106 @@ public class ForecastFragment extends Fragment {
                 }
             }
             return null;
+        }
+
+        /**
+         * The date/time conversion code is going to be moved outside the async task later
+         * so for convenience we're breaking it out into its own method now.
+         */
+        private String getReadableDateString(long time) {
+            // Because the API returns a unix timestamp (in seconds), it must be converted
+            // to milliseconds in order to be converted to valid date.
+            SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MM dd");
+            return shortenedDateFormat.toString();
+        }
+
+        /**
+         * Prepare the weather high/lows for presentation
+         */
+        private String formatHighLows(double high, double low) {
+            // For presentation, assume user doesn't care about tenths of a degree
+            long roundedHigh = Math.round(high);
+            long roundedLow = Math.round(low);
+
+            String highLowStr = roundedHigh + "/" + roundedLow;
+            return highLowStr;
+        }
+
+        /**
+         * Take the String representing the complete forecast in JSON format and
+         * pull out the data we need to construct the Strings needed for the wireframes.
+         *
+         * Fortunately parsing is easy: constructor takes the JSON string and converts it
+         * into an Object hierarchy for us.
+         */
+        private String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
+            throws JSONException {
+
+            // Names of JSON objects to extract
+            final String OMW_LIST = "list";
+            final String OMW_WEATHER = "weather";
+            final String OMW_TEMPERATURE = "temp";
+            final String OMW_MAX = "max";
+            final String OMW_MIN = "min";
+            final String OMW_DESCRIPTION = "main";
+
+            JSONObject forecastJson = new JSONObject(forecastJsonStr);
+            JSONArray weatherArray = forecastJson.getJSONArray(OMW_LIST);
+
+            // OWM returns daily forecasts based upon the local time of the city being
+            // asked for, which means that we need to know the GMT offset to translate data
+            // properly.
+
+            Time time = new Time();
+            time.setToNow();
+
+            // Start at day returned by local time. Otherwise this is all kinds of suck.
+            int julianStartDay = Time.getJulianDay(System.currentTimeMillis(), time.gmtoff);
+
+            // Convert to UTC
+            time = new Time();
+
+            String[] resultStrs = new String[numDays];
+            for (int i = 0; i < weatherArray.length(); i++) {
+                // For now, use format "Day, description, hi/low"
+                String day;
+                String description;
+                String highAndLow;
+
+                // Get JSON object representing day
+                JSONObject dayForecast = weatherArray.getJSONObject(i);
+
+                // The date/time is returned as a long. We need to convert that into
+                // something human-readable, since most people won't read "140034339" as
+                // "this saturday".
+                long dateTime;
+
+                // Converting to UTC
+                dateTime = time.setJulianDay(julianStartDay + i);
+                day = getReadableDateString(dateTime);
+
+                // Description is in a child array called "weather", which is 1 element long.
+                JSONObject weatherObject = dayForecast.getJSONArray(OMW_WEATHER).getJSONObject(0);
+                description = weatherObject.getString(OMW_DESCRIPTION);
+
+                // Temperatures are in a child array called "temp". Don't name variables "temp"
+                // when working with temperatures. Confuses the shit out of people.
+                JSONObject temperatureObject = dayForecast.getJSONObject(OMW_TEMPERATURE);
+                double high = temperatureObject.getDouble(OMW_MAX);
+                double low = temperatureObject.getDouble((OMW_MIN));
+
+                highAndLow = formatHighLows(high, low);
+
+                // Remember this gnarly thing? You get to stuff values in it now.
+                resultStrs[i] = day + " - " + description + " - " + highAndLow;
+            }
+
+            // Log each value packed into resultStrs
+            for (String s : resultStrs) {
+                Log.v(LOG_TAG, "Forecast entry: " + s);
+            }
+
+            return resultStrs;
         }
     }
 }
