@@ -26,8 +26,5 @@ public class WeatherDataParser {
         double maxTemp = array.getJSONObject(dayIndex).getJSONObject("temp").getDouble("max");
 
         return maxTemp;
-
-
-
-}
+    }
 }
