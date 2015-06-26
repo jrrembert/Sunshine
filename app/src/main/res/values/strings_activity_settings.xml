@@ -3,6 +3,12 @@
 
     <!-- Strings related to Settings -->
 
+    <!-- Location Settings -->
+
+    <string name="pref_location_title">Location</string>
+    <string name="pref_location_key" translatable="false">location</string>
+    <string name="pref_location_default" translatable="false">98126</string>
+
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
 
