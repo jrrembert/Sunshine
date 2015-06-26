@@ -9,11 +9,6 @@
     <string name="pref_location_key" translatable="false">location</string>
     <string name="pref_location_default" translatable="false">98126</string>
 
-    <!-- Temperature Settings -->
-    <string name="pref_temperature_title">Temperature Settings</string>
-    <string name="pref_temperature_key">temperature</string>
-    <string name="pref_temperature_default">Imperial</string>
-
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
 

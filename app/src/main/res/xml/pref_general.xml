@@ -1,4 +1,7 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
@@ -9,9 +12,11 @@
         android:inputType="text"
         android:singleLine="true" />
 
-    <CheckBoxPreference
-        android:key="@string/pref_temperature_key"
-        android:title="@string/pref_temperature_title"
-        android:defaultValue="@string/pref_temperature_default" />
+    <ListPreference
+        android:title="@string/pref_units_label"
+        android:key="@string/pref_units_key"
+        android:defaultValue="@string/pref_units_metric"
+        android:entryValues="@array/pref_units_values"
+        android:entries="@array/pref_units_options" />
 
 </PreferenceScreen>
