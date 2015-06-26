@@ -9,4 +9,9 @@
         android:inputType="text"
         android:singleLine="true" />
 
+    <CheckBoxPreference
+        android:key="@string/pref_temperature_key"
+        android:title="@string/pref_temperature_title"
+        android:defaultValue="@string/pref_temperature_default" />
+
 </PreferenceScreen>
