@@ -4,7 +4,7 @@
 ### IntelliJ ###
 # Nuke it all (comment out if you just want to ignore user-specific stuff
 /.idea
-*.iml
+**.iml
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 
